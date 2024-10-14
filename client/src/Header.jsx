@@ -4,6 +4,7 @@ import { useContext } from "react";
 
 export default function Header(){
     const {user} = useContext(UserContext);
+    console.log(user);
 
     return(
         <header className='flex justify-between'>
@@ -25,7 +26,7 @@ export default function Header(){
                 </svg>
             </button>
             </div>
-            <Link to={'/login'} className='flex items-center gap-2 px-2 py-2 border border-gray-300 rounded-full '>
+            <Link to={user?'/account':'/login'} className='flex items-center gap-2 px-2 py-2 border border-gray-300 rounded-full '>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
