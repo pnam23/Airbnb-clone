@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
 const cookieParser = require('cookie-parser');
 const imgDownload = require('image-downloader');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -102,5 +105,26 @@ app.post('/upload-by-link', async (req, res) => {
   }
 });
 
+
+const photosMiddleware = multer({dest:'uploads/'});
+app.post('/upload', photosMiddleware.array('photos', 100) ,(req, res) => {
+    const uploadFiles = [];
+    
+    req.files.forEach((file) => {
+        const { path: tempPath, originalname } = file; 
+        const ext = path.extname(originalname);  
+        const newPath = tempPath + ext;
+
+        try {
+            fs.renameSync(tempPath, newPath);
+            const fileName = path.basename(newPath);  
+            uploadFiles.push(fileName);
+        } catch (err) {
+            console.error('Error renaming file:', err);
+            return res.status(500).json({ error: 'File renaming failed' });
+        }
+    });
+    res.json(uploadFiles);
+});
 
 app.listen(4000);
